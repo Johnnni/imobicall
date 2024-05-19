@@ -85,5 +85,10 @@
 
             $customer = Customer::findOrFail($id);
             $customer->delete();
+
+            return response()->json(
+                ['message' => "Cliente $customer->nome removido com sucesso."],
+                204
+            );
         }
     }

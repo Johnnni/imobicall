@@ -80,6 +80,6 @@
             $estateAgent = EstateAgents::findOrFail($id);
             $estateAgent->delete();
 
-            return response()->json(['message' => 'Estate agent deleted successfully']);
+            return response()->json(['message' => "O corretor $estateAgent->nome foi deletado com sucesso."], 204);
         }
     }
