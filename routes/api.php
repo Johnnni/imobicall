@@ -31,5 +31,6 @@
             Route::post('/store', [EstateAgentController::class, "store"]);
             Route::get('/list/{page}', [EstateAgentController::class, "index"]);
             Route::get('/show/{id}', [EstateAgentController::class, "show"]);
+            Route::put('/update/{id}', [EstateAgentController::class, "update"]);
         });
     });

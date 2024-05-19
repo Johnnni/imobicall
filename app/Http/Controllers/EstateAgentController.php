@@ -3,6 +3,7 @@
     namespace App\Http\Controllers;
 
     use App\Models\EstateAgents;
+    use App\Rules\CelularValidationRule;
     use App\Rules\CpfValidationRule;
     use Illuminate\Http\Request;
 
@@ -11,6 +12,7 @@
          * Display a listing of the resource.
          */
         public function index(string $page) {
+
             return EstateAgents::paginate(10, ['*'], 'page', $page);
         }
 
@@ -42,21 +44,32 @@
          * Display the specified resource.
          */
         public function show(string $id) {
-            return EstateAgents::findOrFail($id);
-        }
 
-        /**
-         * Show the form for editing the specified resource.
-         */
-        public function edit(string $id) {
-            //
+            return EstateAgents::findOrFail($id);
         }
 
         /**
          * Update the specified resource in storage.
          */
         public function update(Request $request, string $id) {
-            //
+
+            $request->validate([
+                'celular' => ['required', 'string', new CelularValidationRule],
+                'email'   => 'required|email|unique:estate_agents,email,'.$id,
+                'nome'    => 'required|string',
+                'cpf'     => ['required', 'string', 'unique:estate_agents,cpf,'.$id, new CpfValidationRule]
+            ]);
+
+            $request->cpf = preg_replace('/[^0-9]/', '', $request->cpf);
+
+            $estateAgent          = EstateAgents::findOrFail($id);
+            $estateAgent->celular = $request->celular;
+            $estateAgent->email   = $request->email;
+            $estateAgent->nome    = $request->nome;
+            $estateAgent->cpf     = $request->cpf;
+            $estateAgent->save();
+
+            return $estateAgent;
         }
 
         /**
