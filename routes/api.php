@@ -1,6 +1,7 @@
 <?php
 
     use App\Http\Controllers\AuthController;
+    use App\Http\Controllers\EstateAgentController;
     use App\Http\Controllers\UserController;
     use Illuminate\Support\Facades\Route;
 
@@ -19,8 +20,16 @@
     Route::post('/register', [UserController::class, "register"]);
 
     Route::middleware(['auth:sanctum'])->group(function () {
-        // all users routes
+
         Route::group(['prefix' => 'user'], function () {
-            Route::get('/list', [UserController::class, "list"]);
+
+            Route::get('/list', [UserController::class, "index"]);
+        });
+
+        Route::group(['prefix' => 'estateagent'], function () {
+
+            Route::post('/store', [EstateAgentController::class, "store"]);
+            Route::get('/list/{page}', [EstateAgentController::class, "index"]);
+            Route::get('/show/{id}', [EstateAgentController::class, "show"]);
         });
     });

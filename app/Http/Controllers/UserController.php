@@ -50,7 +50,7 @@
          *
          * @return LengthAwarePaginator The paginated list of users.
          */
-        public function list(Request $request): LengthAwarePaginator {
+        public function index(Request $request): LengthAwarePaginator {
 
             $page = $request->query('page', 1);
 
