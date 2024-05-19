@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\EstateAgents;
+use App\Models\EstateAgent;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EstateAgentsFactory extends Factory {
@@ -13,7 +13,7 @@ class EstateAgentsFactory extends Factory {
      *
      * @var string
      */
-    protected $model = EstateAgents::class;
+    protected $model = EstateAgent::class;
     /**
      * Define the model's default state.
      *

@@ -43,5 +43,6 @@
             Route::get('/show/{id}', [CustomerController::class, "show"]);
             Route::put('/update/{id}', [CustomerController::class, "update"]);
             Route::delete('/delete/{id}', [CustomerController::class, "destroy"]);
+            Route::get('/list/{page}/estateagent/{estate_agent_id}', [CustomerController::class, "indexByEstateAgent"]);
         });
     });

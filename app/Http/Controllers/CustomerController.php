@@ -3,6 +3,7 @@
     namespace App\Http\Controllers;
 
     use App\Models\Customer;
+    use App\Models\EstateAgent;
     use App\Rules\CelularValidationRule;
     use App\Rules\CpfValidationRule;
     use Illuminate\Http\Request;
@@ -14,6 +15,16 @@
         public function index(string $page) {
 
             return Customer::paginate(10, ['*'], 'page', $page);
+        }
+
+        public function indexByEstateAgent(string $page, string $estate_agent_id) {
+
+            $estateAgent = EstateAgent::find($estate_agent_id);
+            if ($estateAgent) {
+                return $estateAgent->customers()->paginate(10, ['*'], 'page', $page);
+            }
+
+            return response()->json(['message' => 'Agente imobiliário não encontrado.'], 404);
         }
 
 
@@ -30,7 +41,8 @@
                 'estate_agent_id' => 'required|exists:estate_agents,id'
             ]);
 
-            $request->cpf = preg_replace('/[^0-9]/', '', $request->cpf);
+            $request->cpf     = preg_replace('/[^0-9]/', '', $request->cpf);
+            $request->celular = preg_replace('/[^0-9]/', '', $request->celular);
 
             $customer                  = new Customer();
             $customer->celular         = $request->celular;
@@ -86,9 +98,6 @@
             $customer = Customer::findOrFail($id);
             $customer->delete();
 
-            return response()->json(
-                ['message' => "Cliente $customer->nome removido com sucesso."],
-                204
-            );
+            return response()->json(['message' => "Cliente $customer->nome removido com sucesso."]);
         }
     }

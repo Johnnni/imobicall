@@ -2,7 +2,7 @@
 
     namespace App\Http\Controllers;
 
-    use App\Models\EstateAgents;
+    use App\Models\EstateAgent;
     use App\Rules\CelularValidationRule;
     use App\Rules\CpfValidationRule;
     use Illuminate\Http\Request;
@@ -13,7 +13,7 @@
          */
         public function index(string $page) {
 
-            return EstateAgents::paginate(10, ['*'], 'page', $page);
+            return EstateAgent::paginate(10, ['*'], 'page', $page);
         }
 
         /**
@@ -30,7 +30,7 @@
 
             $request->cpf = preg_replace('/[^0-9]/', '', $request->cpf);
 
-            $estateAgent          = new EstateAgents();
+            $estateAgent          = new EstateAgent();
             $estateAgent->celular = $request->celular;
             $estateAgent->email   = $request->email;
             $estateAgent->nome    = $request->nome;
@@ -45,7 +45,7 @@
          */
         public function show(string $id) {
 
-            return EstateAgents::findOrFail($id);
+            return EstateAgent::findOrFail($id);
         }
 
         /**
@@ -60,9 +60,10 @@
                 'cpf'     => ['required', 'string', 'unique:estate_agents,cpf,'.$id, new CpfValidationRule]
             ]);
 
-            $request->cpf = preg_replace('/[^0-9]/', '', $request->cpf);
+            $request->cpf     = preg_replace('/[^0-9]/', '', $request->cpf);
+            $request->celular = preg_replace('/[^0-9]/', '', $request->celular);
 
-            $estateAgent          = EstateAgents::findOrFail($id);
+            $estateAgent          = EstateAgent::findOrFail($id);
             $estateAgent->celular = $request->celular;
             $estateAgent->email   = $request->email;
             $estateAgent->nome    = $request->nome;
@@ -77,9 +78,17 @@
          */
         public function destroy(string $id) {
 
-            $estateAgent = EstateAgents::findOrFail($id);
+            $estateAgent = EstateAgent::findOrFail($id);
+
+            if ($estateAgent->customers->count() > 0) {
+                foreach ($estateAgent->customers as $customer) {
+                    $customer->estate_agent_id = null;
+                    $customer->save();
+                }
+            }
+
             $estateAgent->delete();
 
-            return response()->json(['message' => "O corretor $estateAgent->nome foi deletado com sucesso."], 204);
+            return response()->json(['message' => "Corretor $estateAgent->nome deletado com sucesso!", "id" => $id]);
         }
     }

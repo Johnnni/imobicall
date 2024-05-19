@@ -2,7 +2,7 @@
 
     namespace Database\Seeders;
 
-    use App\Models\EstateAgents;
+    use App\Models\EstateAgent;
     use Illuminate\Database\Seeder;
 
 
@@ -14,6 +14,6 @@
          */
         public function run() {
 
-            EstateAgents::factory()->count(50)->create();
+            EstateAgent::factory()->count(50)->create();
         }
     }
