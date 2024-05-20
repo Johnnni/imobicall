@@ -5,8 +5,10 @@
     use App\Models\User;
     use Illuminate\Contracts\Pagination\LengthAwarePaginator;
     use Illuminate\Database\Eloquent\Model;
+    use Illuminate\Http\JsonResponse;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Hash;
+    use Illuminate\Support\Facades\Validator;
 
     /**
      * Class UserController
@@ -22,15 +24,24 @@
          *
          * @param  Request  $request  The incoming HTTP request.
          *
-         * @return Model|User The newly created user.
+         * @return \Illuminate\Http\JsonResponse The newly created user.
          */
-        public function register(Request $request): Model|User {
+        public function register(Request $request): JsonResponse|Model {
 
-            $request->validate([
+            $validation = Validator::make($request->all(), [
                 'name'     => 'required|string',
                 'email'    => 'required|email',
-                'password' => 'required',
+                'password' => 'required|min:8',
             ]);
+
+            if ($validation->fails()) {
+                $fields = $validation->errors()->keys();
+                return response()->json([
+                    'message' => 'Erro ao validar dados',
+                    'fields'  => $fields,
+                    'success' => false,
+                ]);
+            }
 
             $user = User::create([
                 'name'     => $request->name,

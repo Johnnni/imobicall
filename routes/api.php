@@ -19,6 +19,14 @@
 
     Route::post('/login', [AuthController::class, "login"]);
     Route::post('/register', [UserController::class, "register"]);
+    Route::post('/logout', [AuthController::class, "logout"])->middleware('auth:sanctum');
+
+    /*
+     * Recover password routes
+     */
+    Route::post('/forgot-password', [AuthController::class, "forgotPassword"]);
+    Route::post('/reset-password', [AuthController::class, "resetPassword"]);
+
 
     Route::middleware(['auth:sanctum'])->group(function () {
 
